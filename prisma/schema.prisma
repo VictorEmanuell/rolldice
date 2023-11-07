@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int         @id @default(autoincrement())
+  name      String
+  username  String
+  user_auth User_Auth?
+  character Character[]
+
+  @@unique([id, username])
+  @@map("users")
+}
+
+model User_Auth {
+  user          User   @relation(fields: [user_id, username], references: [id, username])
+  user_id       Int
+  username      String
+  password_hash String
+
+  @@unique([user_id, username])
+  @@map("user_auth")
+}
+
+model Character {
+  user             User             @relation(fields: [user_id], references: [id])
+  id               Int              @id @default(autoincrement())
+  user_id          Int
+  name             String
+  class            String
+  level            Int
+  attributes       Attribute[]
+  attack           Attack[]
+  character_skills CharacterSkill[]
+
+  @@unique([user_id])
+  @@map("characters")
+}
+
+model Attribute {
+  character    Character @relation(fields: [character_id], references: [id])
+  character_id Int
+  strength     Int
+  dexterity    Int
+  constitution Int
+  intelligence Int
+  wisdom       Int
+  charisma     Int
+
+  @@unique([character_id])
+  @@map("attributes")
+}
+
+model Attack {
+  character           Character @relation(fields: [character_id], references: [id])
+  character_id        Int
+  name                String
+  attack_bonus        Int
+  damage              String
+  extra_damage        Int
+  damage_type         String
+  damage_attribute    String
+  extra_dices         Int
+  critical            Int
+  critical_type       String
+  critical_multiplier Int
+  range               String
+
+  @@unique([character_id])
+  @@map("attacks")
+}
+
+model Skill {
+  id               Int              @id @default(autoincrement())
+  name             String
+  trained          Boolean
+  penalty          Boolean
+  character_skills CharacterSkill[]
+
+  @@map("skills")
+}
+
+model CharacterSkill {
+  character    Character @relation(fields: [character_id], references: [id])
+  character_id Int
+
+  skill     Skill  @relation(fields: [skill_id], references: [id])
+  skill_id  Int
+  attribute String
+  others    Int
+
+  @@unique([character_id, skill_id])
+  @@map("character_skills")
+}
