@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Users
+
 model User {
   id        Int         @id @default(autoincrement())
   name      String
@@ -28,6 +30,8 @@ model User_Auth {
   @@map("user_auth")
 }
 
+// Characters
+
 model Character {
   user             User             @relation(fields: [user_id], references: [id])
   id               Int              @id @default(autoincrement())
@@ -35,8 +39,9 @@ model Character {
   name             String
   class            String
   level            Int
-  attributes       Attribute[]
+  attributes       Attribute?
   attack           Attack[]
+  defense          Defense?
   character_skills CharacterSkill[]
 
   @@unique([user_id])
@@ -55,6 +60,23 @@ model Attribute {
 
   @@unique([character_id])
   @@map("attributes")
+}
+
+model Defense {
+  id            Int       @id @default(autoincrement())
+  character     Character @relation(fields: [character_id], references: [id])
+  character_id  Int       @unique
+  slot1_name    String
+  slot1_defense Int
+  slot1_penalty Int
+  slot2_name    String
+  slot2_defense Int
+  slot2_penalty Int
+  attribute     String
+  use_atribute  Boolean
+  other         Int
+
+  @@map("defenses")
 }
 
 model Attack {
@@ -76,6 +98,22 @@ model Attack {
   @@map("attacks")
 }
 
+model CharacterSkill {
+  character    Character @relation(fields: [character_id], references: [id])
+  character_id Int
+
+  skill     Skill  @relation(fields: [skill_id], references: [id])
+  skill_id  Int
+  trained   Int
+  attribute String
+  others    Int
+
+  @@unique([character_id, skill_id])
+  @@map("character_skills")
+}
+
+// Static
+
 model Skill {
   id               Int              @id @default(autoincrement())
   name             String
@@ -84,17 +122,4 @@ model Skill {
   character_skills CharacterSkill[]
 
   @@map("skills")
-}
-
-model CharacterSkill {
-  character    Character @relation(fields: [character_id], references: [id])
-  character_id Int
-
-  skill     Skill  @relation(fields: [skill_id], references: [id])
-  skill_id  Int
-  attribute String
-  others    Int
-
-  @@unique([character_id, skill_id])
-  @@map("character_skills")
 }
