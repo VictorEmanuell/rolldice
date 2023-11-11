@@ -12,21 +12,21 @@ datasource db {
 model User {
   id        Int         @id @default(autoincrement())
   name      String
-  username  String
+  email     String
   user_auth User_Auth?
   character Character[]
 
-  @@unique([id, username])
+  @@unique([id, email])
   @@map("users")
 }
 
 model User_Auth {
-  user          User   @relation(fields: [user_id, username], references: [id, username])
+  user          User   @relation(fields: [user_id, email], references: [id, email])
   user_id       Int
-  username      String
+  email         String
   password_hash String
 
-  @@unique([user_id, username])
+  @@unique([user_id, email])
   @@map("user_auth")
 }
 
@@ -102,9 +102,9 @@ model CharacterSkill {
   character    Character @relation(fields: [character_id], references: [id])
   character_id Int
 
-  skill     Skill  @relation(fields: [skill_id], references: [id])
+  skill     Skill   @relation(fields: [skill_id], references: [id])
   skill_id  Int
-  trained   Int
+  trained   Boolean
   attribute String
   others    Int
 
