@@ -33,24 +33,42 @@ model User_Auth {
 // Characters
 
 model Character {
-  user             User             @relation(fields: [user_id], references: [id])
+  user    User @relation(fields: [user_id], references: [id])
+  user_id Int
+
   id               Int              @id @default(autoincrement())
-  user_id          Int
   name             String
-  class            String
+  class            Classes
   level            Int
   attributes       Attribute?
   attack           Attack[]
   defense          Defense?
   character_skills CharacterSkill[]
 
-  @@unique([user_id])
   @@map("characters")
+}
+
+enum Classes {
+  Arcanista
+  Barbaro
+  Bardo
+  Bucaneiro
+  Cacador
+  Cavaleiro
+  Clerigo
+  Druida
+  Guerreiro
+  Inventor
+  Ladino
+  Lutador
+  Nobre
+  Paladino
 }
 
 model Attribute {
   character    Character @relation(fields: [character_id], references: [id])
   character_id Int
+
   strength     Int
   dexterity    Int
   constitution Int
@@ -63,52 +81,77 @@ model Attribute {
 }
 
 model Defense {
-  id            Int       @id @default(autoincrement())
-  character     Character @relation(fields: [character_id], references: [id])
-  character_id  Int       @unique
+  character    Character @relation(fields: [character_id], references: [id])
+  character_id Int
+
   slot1_name    String
   slot1_defense Int
   slot1_penalty Int
   slot2_name    String
   slot2_defense Int
   slot2_penalty Int
-  attribute     String
+  attribute     Attributes
   use_atribute  Boolean
-  other         Int
+  others        Int
 
+  @@unique([character_id])
   @@map("defenses")
 }
 
+enum Attributes {
+  FOR
+  DES
+  CON
+  INT
+  SAB
+  CAR
+}
+
 model Attack {
-  character           Character @relation(fields: [character_id], references: [id])
-  character_id        Int
+  character    Character @relation(fields: [character_id], references: [id])
+  character_id Int
+
+  id                  Int         @id @default(autoincrement())
   name                String
   attack_bonus        Int
   damage              String
   extra_damage        Int
-  damage_type         String
-  damage_attribute    String
+  damage_type         DamageTypes
+  damage_attribute    Attributes
   extra_dices         Int
-  critical            Int
   critical_type       String
+  critical_value      Int
   critical_multiplier Int
-  range               String
+  range               Ranges
 
-  @@unique([character_id])
   @@map("attacks")
+}
+
+enum Ranges {
+  Curto
+  Medio
+  Longo
+  Outro
+}
+
+enum DamageTypes {
+  Perfuracao
+  Corte
+  Impacto
+  Outro
 }
 
 model CharacterSkill {
   character    Character @relation(fields: [character_id], references: [id])
   character_id Int
 
-  skill     Skill   @relation(fields: [skill_id], references: [id])
+  skill     Skill      @relation(fields: [skill_id], references: [id])
   skill_id  Int
   trained   Boolean
-  attribute String
+  attribute Attributes
   others    Int
 
-  @@unique([character_id, skill_id])
+  @@unique([skill_id])
   @@map("character_skills")
 }
 
