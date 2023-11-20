@@ -5,14 +5,14 @@ export default {
 	create,
 	get,
 	update,
-	drop
+	drop,
 };
 
 async function create(request: Request, response: Response) {
 	try {
-		const userData = request.body;
+		const { id, name, email } = request.body;
 
-		const createUser = await UserService.create(userData);
+		const createUser = await UserService.create({ id, name, email });
 
 		return response.send(createUser);
 	} catch (error) {
@@ -25,9 +25,9 @@ async function create(request: Request, response: Response) {
 
 async function get(request: Request, response: Response) {
 	try {
-		const { id, username } = request.body;
+		const { user_id } = request.body;
 
-		const getUser = await UserService.get({ id, username });
+		const getUser = await UserService.get({ user_id });
 
 		return response.send(getUser);
 	} catch (error) {
@@ -55,7 +55,7 @@ async function drop(request: Request, response: Response) {
 	} catch (error) {
 		return response.send({
 			status: 'error',
-			message: error
+			message: error,
 		});
 	}
 }

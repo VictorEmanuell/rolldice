@@ -10,14 +10,13 @@ interface IMethodsReturn {
 }
 
 interface ICreateUserProps {
-	username: string;
+	id: string;
 	name: string;
-	password: string;
+	email: string;
 }
 
 interface IGetUserProps {
-	id?: string;
-	username?: string;
+	user_id: string;
 }
 
 export default {
@@ -27,53 +26,28 @@ export default {
 	drop,
 };
 
-async function create({
-	username,
-	name,
-	password,
-}: ICreateUserProps): Promise<IMethodsReturn> {
+async function create({ id, name, email }: ICreateUserProps): Promise<IMethodsReturn> {
 	try {
-		if (!username || !name || !password) {
+		if (id && name && email) {
+			const createUserInDB = await UserRepository.create({ id, name, email });
+
+			if (createUserInDB === 'success') {
+				return {
+					status: 'success',
+					message: UserConstants.userCreateSuccess,
+				};
+			} else {
+				return {
+					status: 'error',
+					message: UserConstants.userCreateError,
+				};
+			}
+		} else {
 			return {
 				status: 'error',
 				message: UserConstants.userCreateNullInput,
 			};
 		}
-
-		const checkUserExist = await UserRepository.get({ type: 'username', key: username });
-
-		if (checkUserExist || checkUserExist === 'error') {
-			return {
-				status: 'error',
-				message: UserConstants.userCreateAlreadyExist,
-			};
-		}
-
-		const password_hash = await bcrypt.hash(password, 10);
-
-		const createUser = await UserRepository.create({
-			username,
-			name,
-			password_hash,
-		});
-
-		if (createUser === 'success') {
-			return {
-				status: 'success',
-				message: UserConstants.userCreateSuccess,
-				data: {
-					user: {
-						username,
-						name,
-					},
-				},
-			};
-		}
-
-		return {
-			status: 'error',
-			message: UserConstants.userCreateError,
-		};
 	} catch (error) {
 		return {
 			status: 'error',
@@ -82,59 +56,12 @@ async function create({
 	}
 }
 
-async function get({ id, username }: IGetUserProps): Promise<IMethodsReturn> {
+async function get({ user_id }: IGetUserProps): Promise<IMethodsReturn> {
 	try {
-		if (id) {
-			const user = await UserRepository.get({ type: 'id', key: id });
-
-			if (!user) {
-				return {
-					status: 'error',
-					message: UserConstants.userGetNotFound,
-				};
-			}
-
-			if (user === 'error') {
-				return {
-					status: 'error',
-					message: UserConstants.userGetError,
-				};
-			}
-
-			return {
-				status: 'success',
-				message: UserConstants.userGetSuccess,
-				data: { user },
-			};
-		}
-
-		if (username) {
-			const user = await UserRepository.get({ type: 'username', key: username });
-
-			if (!user) {
-				return {
-					status: 'error',
-					message: UserConstants.userGetNotFound,
-				};
-			}
-
-			if (user === 'error') {
-				return {
-					status: 'error',
-					message: UserConstants.userGetError,
-				};
-			}
-
-			return {
-				status: 'success',
-				message: UserConstants.userGetSuccess,
-				data: { user },
-			};
-		}
-
+		//
 		return {
-			status: 'error',
-			message: UserConstants.userGetError,
+			status: 'success',
+			message: 'Success',
 		};
 	} catch (error) {
 		return {

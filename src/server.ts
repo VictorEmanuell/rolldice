@@ -5,7 +5,6 @@ import Express from 'express';
 // import routes
 
 import UserRoutes from './routes/UserRoutes';
-import AuthRoutes from './routes/AuthRoutes';
 
 // setup
 
@@ -15,10 +14,9 @@ app.use(Express.json());
 // routes
 
 app.use(UserRoutes);
-app.use(AuthRoutes);
 
 // initialize app
 
 app.listen(process.env.PORT, () => {
-	console.log('Server running!');
+	console.log('Server running!', process.env.PORT);
 });

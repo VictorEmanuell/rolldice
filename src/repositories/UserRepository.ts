@@ -1,9 +1,9 @@
 import { prisma } from '../database';
 
 interface ICreateUserProps {
-	username: string;
+	id: string;
 	name: string;
-	password_hash: string;
+	email: string;
 }
 
 interface IGetUserProps {
@@ -18,17 +18,13 @@ export default {
 	drop,
 };
 
-async function create({ username, name, password_hash }: ICreateUserProps) {
+async function create({ id, name, email }: ICreateUserProps) {
 	try {
 		await prisma.user.create({
 			data: {
-				username,
+				id,
 				name,
-				user_auth: {
-					create: {
-						password_hash,
-					},
-				},
+				email,
 			},
 		});
 
@@ -40,29 +36,29 @@ async function create({ username, name, password_hash }: ICreateUserProps) {
 
 async function get({ type, key }: IGetUserProps) {
 	try {
-		if (type === 'id') {
-			const getUser = await prisma.user.findFirst({
-				where: {
-					id: {
-						equals: key
-					},
-				},
-			});
+		// if (type === 'id') {
+		// 	const getUser = await prisma.user.findFirst({
+		// 		where: {
+		// 			id: {
+		// 				equals: key
+		// 			},
+		// 		},
+		// 	});
 
-			return getUser;
-		}
+		// 	return getUser;
+		// }
 
-		if (type === 'username') {
-			const getUser = await prisma.user.findFirst({
-				where: {
-					username: {
-						equals: key,
-					},
-				},
-			});
+		// if (type === 'username') {
+		// 	const getUser = await prisma.user.findFirst({
+		// 		where: {
+		// 			username: {
+		// 				equals: key,
+		// 			},
+		// 		},
+		// 	});
 
-			return getUser;
-		}
+		// 	return getUser;
+		// }
 
 		return 'error';
 	} catch (error) {

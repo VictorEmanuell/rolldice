@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { jwtVerify, importX509 } from 'jose';
 
 import AuthConstants from '../constants/AuthConstants';
 
-const secret = process.env.SECRET_JWT;
+const firebaseProjectId = process.env.FIREBASE_PROJECT_ID;
 
 export default async function (request: Request, response: Response, next: NextFunction) {
 	try {
@@ -17,12 +17,43 @@ export default async function (request: Request, response: Response, next: NextF
 			});
 		}
 
+		let publicKeys;
+
+		const getPublicKeys = async () => {
+			if (publicKeys) {
+				return publicKeys;
+			}
+			const res = await fetch(
+				'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'
+			);
+			publicKeys = await res.json();
+			return publicKeys;
+		};
+
+		const verifyFirebaseJwt = async (firebaseJwt) => {
+			const publicKeys = await getPublicKeys();
+			const decodedToken = await jwtVerify(
+				firebaseJwt,
+				async (header) => {
+					const x509Cert = publicKeys[header.kid];
+					const publicKey = await importX509(x509Cert, 'RS256');
+					return publicKey;
+				},
+				{
+					issuer: `https://securetoken.google.com/${firebaseProjectId}`,
+					audience: firebaseProjectId,
+					algorithms: ['RS256'],
+				}
+			);
+			return decodedToken.payload;
+		};
+
 		try {
-			jwt.verify(token, secret);
+			const tokenData = await verifyFirebaseJwt(token);
 
-			const { username }: any = jwt.decode(token);
+			console.log(tokenData);
 
-			if (request.body.username && username != request.body.username) {
+			if (request.body.user_id && tokenData.user_id != request.body.user_id) {
 				return response.send({
 					status: 'error',
 					message: AuthConstants.authInvalidToken,

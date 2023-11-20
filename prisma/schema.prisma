@@ -10,31 +10,31 @@ datasource db {
 // Users
 
 model User {
-  id        Int         @id @default(autoincrement())
+  id        String      @id
   name      String
   email     String
-  user_auth User_Auth?
+  // user_auth User_Auth?
   character Character[]
 
   @@unique([id, email])
   @@map("users")
 }
 
-model User_Auth {
-  user          User   @relation(fields: [user_id, email], references: [id, email])
-  user_id       Int
-  email         String
-  password_hash String
+// model User_Auth {
+//   user          User   @relation(fields: [user_id, email], references: [id, email])
+//   user_id       String
+//   email         String
+//   password_hash String
 
-  @@unique([user_id, email])
-  @@map("user_auth")
-}
+//   @@unique([user_id, email])
+//   @@map("user_auth")
+// }
 
 // Characters
 
 model Character {
-  user    User @relation(fields: [user_id], references: [id])
-  user_id Int
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
 
   id               Int              @id @default(autoincrement())
   name             String
