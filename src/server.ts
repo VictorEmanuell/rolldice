@@ -5,6 +5,7 @@ import Express from 'express';
 // import routes
 
 import UserRoutes from './routes/UserRoutes';
+import CharacterRoutes from './routes/CharacterRoutes';
 
 // setup
 
@@ -14,6 +15,7 @@ app.use(Express.json());
 // routes
 
 app.use(UserRoutes);
+app.use(CharacterRoutes);
 
 // initialize app
 

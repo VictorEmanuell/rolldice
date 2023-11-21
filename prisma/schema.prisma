@@ -13,22 +13,11 @@ model User {
   id        String      @id
   name      String
   email     String
-  // user_auth User_Auth?
-  character Character[]
+  characters Character[]
 
   @@unique([id, email])
   @@map("users")
 }
-
-// model User_Auth {
-//   user          User   @relation(fields: [user_id, email], references: [id, email])
-//   user_id       String
-//   email         String
-//   password_hash String
-
-//   @@unique([user_id, email])
-//   @@map("user_auth")
-// }
 
 // Characters
 
@@ -40,14 +29,13 @@ model Character {
   name             String
   class            Classes
   level            Int
-  // attributes       Attribute?
   strength         Int
   dexterity        Int
   constitution     Int
   intelligence     Int
   wisdom           Int
   charisma         Int
-  attack           Attack[]
+  attacks           Attack[]
   defense          Defense?
   character_skills CharacterSkill[]
 
@@ -70,21 +58,6 @@ enum Classes {
   Nobre
   Paladino
 }
-
-// model Attribute {
-//   character    Character @relation(fields: [character_id], references: [id])
-//   character_id Int
-
-//   strength     Int
-//   dexterity    Int
-//   constitution Int
-//   intelligence Int
-//   wisdom       Int
-//   charisma     Int
-
-//   @@unique([character_id])
-//   @@map("attributes")
-// }
 
 model Defense {
   character    Character @relation(fields: [character_id], references: [id])

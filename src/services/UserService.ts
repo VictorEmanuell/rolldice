@@ -1,5 +1,3 @@
-import bcrypt from 'bcrypt';
-
 import UserRepository from '../repositories/UserRepository';
 import UserConstants from '../constants/UserConstants';
 

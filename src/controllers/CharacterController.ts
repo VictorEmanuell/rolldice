@@ -1,61 +1,58 @@
-// import { Request, Response } from 'express';
-// import UserService from '../services/UserService';
+import { Request, Response } from 'express';
+import CharacterService from '../services/CharacterService';
 
-// export default {
-// 	create,
-// 	get,
-// 	update,
-// 	drop
-// };
+export default {
+	create,
+	get,
+	update,
+	drop,
+};
 
-// async function create(request: Request, response: Response) {
-// 	try {
-// 		const userData = request.body;
+async function create(request: Request, response: Response) {
+	try {
+		const { user_id } = request.query;
+		const characterData = request.body;
 
-// 		const createUser = await UserService.create(userData);
+		const createCharacter = await CharacterService.create({ user_id, ...characterData });
 
-// 		return response.send(createUser);
-// 	} catch (error) {
-// 		return response.send({
-// 			status: 'error',
-// 			message: error,
-// 		});
-// 	}
-// }
+		return response.send(createCharacter);
+	} catch (error) {
+		return response.send({
+			status: 'error',
+			message: error,
+		});
+	}
+}
 
-// async function get(request: Request, response: Response) {
-// 	try {
-// 		const { id, username } = request.body;
+async function get(request: Request, response: Response) {
+	try {
+		//
+	} catch (error) {
+		return response.send({
+			status: 'error',
+			message: error,
+		});
+	}
+}
 
-// 		const getUser = await UserService.get({ id, username });
+async function update(request: Request, response: Response) {
+	try {
+		//
+	} catch (error) {
+		return response.send({
+			status: 'error',
+			message: error,
+		});
+	}
+}
 
-// 		return response.send(getUser);
-// 	} catch (error) {
-// 		return response.send({
-// 			status: 'error',
-// 			message: error,
-// 		});
-// 	}
-// }
-
-// async function update(request: Request, response: Response) {
-// 	try {
-// 		//
-// 	} catch (error) {
-// 		return response.send({
-// 			status: 'error',
-// 			message: error,
-// 		});
-// 	}
-// }
-
-// async function drop(request: Request, response: Response) {
-// 	try {
-// 		//
-// 	} catch (error) {
-// 		return response.send({
-// 			status: 'error',
-// 			message: error
-// 		});
-// 	}
-// }
+async function drop(request: Request, response: Response) {
+	try {
+		//
+	} catch (error) {
+		return response.send({
+			status: 'error',
+			message: error,
+		});
+	}
+}

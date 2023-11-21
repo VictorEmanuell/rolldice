@@ -10,6 +10,8 @@ export default async function (request: Request, response: Response, next: NextF
 		const tokenHeader = request.headers['authorization'];
 		const token = tokenHeader && tokenHeader.split(' ')[1];
 
+		const { user_id } = request.query;
+
 		if (!token) {
 			return response.send({
 				status: 'error',
@@ -51,9 +53,7 @@ export default async function (request: Request, response: Response, next: NextF
 		try {
 			const tokenData = await verifyFirebaseJwt(token);
 
-			console.log(tokenData);
-
-			if (request.body.user_id && tokenData.user_id != request.body.user_id) {
+			if (user_id && tokenData.user_id != user_id) {
 				return response.send({
 					status: 'error',
 					message: AuthConstants.authInvalidToken,
